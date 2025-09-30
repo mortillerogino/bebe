@@ -1,0 +1,250 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>My Love of a lifetime</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Gino Mortillero">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <!-- Intro overlay -->
+    <div id="introOverlay" class="intro-overlay" role="dialog" aria-modal="true" aria-label="Love message">
+        <div class="intro-message"></div>
+    </div>
+
+    <main class="card" role="main" aria-labelledby="title">
+        <h1 id="title">You're Amazing, Babe</h1>
+
+        <figure class="portrait" aria-label="Our photo">
+            <img src="images/1.jpg" alt="Us" loading="lazy" />
+        </figure>
+
+        <div class="poem" aria-label="Lyrics">
+            <p class="verse">
+                Every time our eyes meet<br />
+                This feelin' inside me<br />
+                Is almost more than I can take<br />
+                Baby when you touch me<br />
+                I can feel how much you love me<br />
+                And it just blows me away
+            </p>
+
+            <p class="verse">
+                I've never been this close to anyone or anything<br />
+                I can hear your thoughts<br />
+                I can see your dreams
+            </p>
+
+            <p class="verse">
+                I don't know how you do what you do<br />
+                I'm so in love with you<br />
+                It just keeps gettin' better
+            </p>
+
+            <p class="verse">
+                I wanna spend the rest of my life<br />
+                With you by my side<br />
+                Forever and ever
+            </p>
+
+            <p class="verse">
+                Every little thing that you do<br />
+                Baby I'm amazed by you
+            </p>
+
+            <p class="verse">
+                The smell of your skin<br />
+                The taste of your kiss<br />
+                The way you whisper in the dark<br />
+                Your hair all around me<br />
+                Baby you surround me<br />
+                You touch every place in my heart
+            </p>
+
+            <p class="verse">
+                Oh it feels like the first time every time<br />
+                I wanna spend the whole night in your arms
+            </p>
+
+            <p class="verse">
+                I don't know how you do what you do<br />
+                I'm so in love with you<br />
+                It just keeps gettin' better
+            </p>
+
+            <p class="verse">
+                I wanna spend the rest of my life<br />
+                With you by my side<br />
+                Forever and ever
+            </p>
+
+            <p class="verse">
+                Every little thing that you do<br />
+                Baby I'm amazed by you
+            </p>
+
+            <p class="verse">
+                Every little thing that you do<br />
+                I'm so in love with you<br />
+                It just keeps gettin' better<br />
+                I wanna spend the rest of my life<br />
+                With you by my side<br />
+                Forever and ever<br />
+                Every little thing that you do<br />
+                Ooh (every little thing that you do)<br />
+                Every little thing that you do<br />
+                Baby I'm amazed by you
+            </p>
+        </div>
+    </main>
+
+    <!-- Floating button to open the popup -->
+    <button id="openPlayerBtn"
+            class="player-fab"
+            aria-haspopup="dialog"
+            aria-controls="playerPopup"
+            aria-expanded="false"
+            title="Open player">
+        ♪
+    </button>
+
+    <!-- Right-side popup player -->
+    <div id="playerPopup" class="player-popup" role="dialog" aria-modal="false" aria-label="Spotify player">
+        <div class="player-popup__header">
+            <span class="player-popup__title">Now Playing</span>
+            <button id="closePlayerBtn" class="player-popup__close" aria-label="Close player">×</button>
+        </div>
+        <div class="player-popup__body">
+            <iframe title="Spotify track"
+                    src="https://open.spotify.com/embed/track/3kJ8jdG4mHCtW2MkZFWZNB?utm_source=generator&theme=0"
+                    width="100%"
+                    height="152"
+                    frameborder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                    style="border-radius:12px"></iframe>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const openBtn = document.getElementById('openPlayerBtn');
+            const closeBtn = document.getElementById('closePlayerBtn');
+            const popup = document.getElementById('playerPopup');
+
+            function openPopup() {
+                popup.classList.add('open');
+                openBtn.setAttribute('aria-expanded', 'true');
+            }
+
+            function closePopup() {
+                popup.classList.remove('open');
+                openBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            // Start attention animation now (will also be re-applied after intro overlay hides)
+            openBtn.classList.add('attention');
+
+            // Stop attention animation once user clicks to open
+            openBtn.addEventListener('click', () => {
+                openPopup();
+                openBtn.classList.remove('attention');
+            });
+
+            closeBtn.addEventListener('click', closePopup);
+
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePopup(); });
+            popup.addEventListener('click', (e) => { if (e.target === popup) closePopup(); });
+        })();
+    </script>
+
+    <!-- Intro overlay controller: word-by-word reveal -->
+    <script>
+        (function () {
+            const overlay = document.getElementById('introOverlay');
+            const title = document.getElementById('title');
+            const msg = overlay ? overlay.querySelector('.intro-message') : null;
+            const openBtn = document.getElementById('openPlayerBtn');
+            if (!overlay || !msg) return;
+
+            // Prevent scrolling while overlay is visible
+            document.body.classList.add('no-scroll');
+
+            const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const phrase = 'To my Love of a Lifetime, Betsy';
+            const words = phrase.split(' ');
+
+            // Build word spans
+            msg.textContent = '';
+            const spans = [];
+            words.forEach((w, i) => {
+                const span = document.createElement('span');
+                span.className = 'intro-word';
+                span.textContent = w;
+                msg.appendChild(span);
+                spans.push(span);
+                if (i < words.length - 1) msg.append(' ');
+            });
+
+            // Reveal timing
+            const perWordMs = prefersReduced ? 80 : 450;
+            const extraHoldMs = 2000; // extra 2 seconds after the last word
+            const holdAfterLastMs = (prefersReduced ? 300 : 900) + extraHoldMs;
+            const fadeMs = prefersReduced ? 200 : 800;
+
+            let timers = [];
+
+            // Schedule word reveals
+            spans.forEach((s, i) => {
+                timers.push(setTimeout(() => s.classList.add('show'), i * perWordMs));
+            });
+
+            function hideOverlay() {
+                if (!overlay || overlay.classList.contains('is-hidden')) return;
+
+                timers.forEach(clearTimeout);
+                timers = [];
+
+                overlay.style.setProperty('--intro-fade-ms', fadeMs + 'ms');
+                overlay.classList.add('is-hidden');
+                overlay.setAttribute('aria-hidden', 'true');
+                overlay.removeAttribute('aria-modal');
+
+                // Restore scroll
+                document.body.classList.remove('no-scroll');
+
+                // After overlay is hidden, ensure attention animation is active on the button
+                openBtn && openBtn.classList.add('attention');
+
+                // Restore focus to title
+                if (title) {
+                    title.setAttribute('tabindex', '-1');
+                    title.focus({ preventScroll: true });
+                    setTimeout(() => title.removeAttribute('tabindex'), 0);
+                }
+
+                setTimeout(() => overlay.remove(), fadeMs + 50);
+            }
+
+            // Hide after all words + extra hold
+            const totalDisplay = (words.length - 1) * perWordMs + holdAfterLastMs;
+            timers.push(setTimeout(hideOverlay, totalDisplay));
+
+            // Allow skip on click or Escape
+            overlay.addEventListener('click', hideOverlay);
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideOverlay(); });
+
+            window.addEventListener('beforeunload', () => timers.forEach(clearTimeout));
+        })();
+    </script>
+</body>
+</html>

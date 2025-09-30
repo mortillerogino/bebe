@@ -1,0 +1,273 @@
+:root {
+    --bg-start: #fde7ea;   /* blush pink */
+    --bg-end:   #fff5eb;   /* soft peach */
+    --card-bg:  #ffffffcc; /* translucent white */
+    --text:     #3e3333;
+    --accent:   #d6738a;
+    --shadow:   0 10px 30px rgba(0,0,0,0.12);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+
+    /* Clean blush pink -> soft peach gradient (top to bottom) */
+    background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+    background-attachment: fixed; /* keep gradient fixed to the viewport */
+}
+
+/* Block scroll when overlay visible */
+body.no-scroll { overflow: hidden; }
+
+/* Intro overlay */
+.intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000; /* above popup (1200) */
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+    opacity: 1;
+    transition: opacity var(--intro-fade-ms, 800ms) ease;
+    will-change: opacity;
+}
+
+/* Love message styling */
+.intro-message {
+    font-family: "Great Vibes", cursive; /* use Google-hosted font */
+    font-size: clamp(2.2rem, 4vw + 1rem, 4rem);
+    color: var(--accent);
+    text-shadow: 0 6px 22px rgba(214,115,138,0.35);
+    padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+    animation: heartbeat 1800ms ease-in-out infinite;
+    white-space: pre-wrap;
+    text-align: center;
+}
+
+/* Word-by-word reveal */
+.intro-word {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 280ms ease, transform 280ms ease;
+    display: inline-block;
+    margin: 0 0.25ch;
+}
+.intro-word.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Fade out state */
+.intro-overlay.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Gentle heartbeat */
+@keyframes heartbeat {
+    0%   { transform: scale(1);   opacity: 0.96; }
+    25%  { transform: scale(1.03); opacity: 1; }
+    50%  { transform: scale(1);    opacity: 0.98; }
+    75%  { transform: scale(1.04); opacity: 1; }
+    100% { transform: scale(1);    opacity: 0.96; }
+}
+
+/* Centered card; content flows naturally for long lyrics */
+.card {
+    margin: clamp(1rem, 6vh, 3rem) auto 0;
+    width: min(820px, calc(100% - 2rem));
+    background: var(--card-bg);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: clamp(1.25rem, 3vw + 1rem, 2.5rem);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: float-in 600ms ease-out both;
+}
+
+h1 {
+    font-family: "Great Vibes", cursive;
+    /* Increased title size */
+    font-size: clamp(2.8rem, 5vw + 1rem, 4.5rem);
+    line-height: 1.05;
+    /* More space between title and portrait */
+    margin: 0 0 clamp(1.1rem, 1rem + 1.4vw, 2.2rem);
+    color: var(--accent);
+    text-shadow: 0 2px 12px rgba(214, 115, 138, 0.25);
+}
+
+/* Romantic portrait photo */
+.portrait {
+    display: grid;
+    place-items: center;
+    margin: 0 auto clamp(0.75rem, 1rem + 1vw, 1.5rem);
+    width: fit-content;
+}
+.portrait img {
+    width: clamp(160px, 32vw, 280px);
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 999px;                 /* soft circular portrait */
+    border: 6px solid #ffffff;            /* white frame */
+    outline: 2px solid rgba(214,115,138,.35); /* subtle blush outline */
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.12),
+        0 0 0 12px rgba(214,115,138,.08); /* gentle glow ring */
+}
+
+/* Centered poem with stanza spacing */
+.poem {
+    display: grid;
+    gap: clamp(0.9rem, 0.6rem + 1vw, 1.4rem); /* stanza spacing */
+    max-width: 70ch;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.verse {
+    margin: 0;
+    font-family: "Great Vibes", cursive; /* poem uses Great Vibes */
+    font-size: clamp(1rem, 0.95rem + 0.4vw, 1.25rem);
+    line-height: 1.9;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Floating action button to open player */
+.player-fab {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1100;
+    border: none;
+    border-radius: 999px;
+    padding: 0.9rem 1.1rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #fff;
+    background: var(--accent);
+    box-shadow: 0 10px 22px rgba(214, 115, 138, 0.35), 0 6px 12px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+    transform-origin: center bottom; /* better squash-and-stretch */
+}
+.player-fab:hover { transform: translateY(-1px); }
+.player-fab:active { transform: translateY(0); }
+
+/* Attention animation for the Open Player button - MORE BOUNCE */
+.player-fab.attention {
+    animation:
+        fab-hop 1.2s cubic-bezier(.34,1.56,.64,1) infinite,
+        fab-glow 2.4s ease-in-out infinite;
+    will-change: transform, box-shadow;
+}
+
+@keyframes fab-hop {
+    0%   { transform: translateY(0) scale(1); }
+    20%  { transform: translateY(-14px) scale(1.06); }  /* higher jump */
+    35%  { transform: translateY(0) scale(0.96); }      /* squish on land */
+    50%  { transform: translateY(-7px) scale(1.03); }   /* secondary bounce */
+    65%  { transform: translateY(0) scale(0.995); }     /* settle */
+    100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes fab-glow {
+    0%, 100% {
+        box-shadow: 0 10px 22px rgba(214,115,138,0.35), 0 6px 12px rgba(0,0,0,0.12);
+    }
+    50% {
+        box-shadow: 0 16px 30px rgba(214,115,138,0.5), 0 12px 20px rgba(0,0,0,0.16);
+    }
+}
+
+/* Right-side popup player */
+.player-popup {
+    position: fixed;
+    top: clamp(1rem, 4vh, 2rem);
+    right: 1rem;
+    width: min(380px, 92vw);
+    z-index: 1200;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: var(--shadow), 0 24px 60px rgba(0,0,0,0.18);
+    transform: translateX(calc(100% + 1rem));
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 220ms ease, opacity 220ms ease;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+}
+
+/* Open state */
+.player-popup.open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Popup header */
+.player-popup__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.75rem 0.5rem 0.9rem;
+}
+.player-popup__title {
+    font-weight: 600;
+    color: var(--text);
+}
+.player-popup__close {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.player-popup__close:hover {
+    background: rgba(0,0,0,0.06);
+}
+
+/* Popup body */
+.player-popup__body {
+    padding: 0.5rem 0.75rem 0.9rem;
+}
+
+/* Old footer player no longer used, kept for reference if needed
+.player { ... }
+*/
+
+@keyframes float-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .intro-message { animation: none !important; }
+    .intro-word { transition: none !important; }
+    .player-fab.attention { animation: none !important; }
+}
+ 
+/* Mobile tweaks */
+@media (max-width: 480px) {
+    .player-fab { right: 0.75rem; bottom: 0.75rem; }
+    .player-popup { right: 0.75rem; }
+}
